@@ -1,0 +1,82 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Melle
+      changes:
+        - createTable:
+            tableName: Student
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+  - changeSet:
+      id: 2
+      author: Melle
+      changes:
+        - createTable:
+            tableName: Course
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+  - changeSet:
+      id: 3
+      author: Melle
+      changes:
+        - createTable:
+            tableName: Student_Course
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: course_id
+                  type: int
+              - column:
+                  name: student_id
+                  type: int
+        - addForeignKeyConstraint:
+            baseColumnNames: course_id
+            baseTableName: Student_Course
+            constraintName: fk_course
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+            referencedColumnNames: id
+            referencedTableName: Course
+        - addForeignKeyConstraint:
+            baseColumnNames: student_id
+            baseTableName: Student_Course
+            constraintName: fk_student
+            onDelete: CASCADE
+            onUpdate: RESTRICT
+            referencedColumnNames: id
+            referencedTableName: Student
+  - changeSet:
+      id: 4
+      author: Melle
+      changes:
+        - createSequence:
+            incrementBy: 2
+            sequenceName: HIBERNATE_SEQUENCE
+            startValue: 2000
+  - changeSet:
+      id: 5
+      author: Melle
+      changes:
+        - addUniqueConstraint:
+            columnNames: student_id, course_id
+            constraintName: const_student_course
+            tableName: Student_Course
