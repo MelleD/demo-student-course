@@ -30,14 +30,19 @@ class DemoApplicationTests {
 
         Student student = new Student();
         Course course = new Course();
+        Course course2 = new Course();
+        Course course3 = new Course();
 
-        Course savedCourse = courseRepository.save(course);
-        student.setStudentCourse(Set.of(new StudentCourse().setCourse(savedCourse).setStudent(student)));
+        Course savedCourse1 = courseRepository.save(course);
+        Course savedCourse2 = courseRepository.save(course2);
+        Course savedCourse3 = courseRepository.save(course3);
+        courseRepository.save(course2);
+        student.setStudentCourse(Set.of(new StudentCourse().setCourse(savedCourse1).setStudent(student), new StudentCourse().setCourse(savedCourse3).setStudent(student)));
         Student savedStudent = studentRepository.save(student);
 
-        studentService.mergeStudent(savedStudent.getId(), Set.of(savedCourse.getId()));
+        studentService.mergeStudent(savedStudent.getId(), Set.of(savedCourse1.getId(), savedCourse2.getId()));
 
-        assertThat(studentCourseRepository.findAll()).hasSize(1);
+        assertThat(studentCourseRepository.findAll()).hasSize(2);
     }
 
 }

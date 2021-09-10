@@ -28,12 +28,15 @@ public class StudentService {
             throw new EntityNotFoundException();
         }
 
+
+        Set<StudentCourse> currentStudentCourse = student.getStudentCourse().stream().filter(course -> courseIds.contains(course.getCourse().getId())).collect(Collectors.toSet());
+        Set<Long> currentCourseIds = currentStudentCourse.stream().map(studentCourse -> studentCourse.getCourse().getId()).collect(Collectors.toSet());
+
         //TODO what is the best merge strategy
-        Set<StudentCourse> mergeCourses = courses.stream().map(course -> new StudentCourse().setCourse(course).setStudent(student)).collect(Collectors.toSet());
+        Set<StudentCourse> mergeCourses = courses.stream().filter(course -> !currentCourseIds.contains(course.getId())).map(course -> new StudentCourse().setCourse(course).setStudent(student)).collect(Collectors.toSet());
+        mergeCourses.addAll(currentStudentCourse);
         student.setStudentCourse(mergeCourses);
 
-        studentRepository.findAll();
-        courseRepository.findAll();
 
         return studentRepository.save(student);
     }

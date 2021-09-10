@@ -1,6 +1,7 @@
 package test.jpa.demo;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -10,8 +11,8 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @OneToMany(mappedBy = "student", cascade = CascadeType.ALL)
-    private Set<StudentCourse> studentCourse;
+    @OneToMany(mappedBy = "student", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
+    private Set<StudentCourse> studentCourse = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -26,6 +27,7 @@ public class Student {
     }
 
     public void setStudentCourse(Set<StudentCourse> studentCourse) {
-        this.studentCourse = studentCourse;
+        this.studentCourse.clear();
+        this.studentCourse.addAll(studentCourse);
     }
 }
