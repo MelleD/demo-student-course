@@ -8,8 +8,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: int
-                  autoIncrement: true
+                  type: uuid
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -23,8 +22,7 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: int
-                  autoIncrement: true
+                  type: uuid
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -37,17 +35,16 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: int
-                  autoIncrement: true
+                  type: uuid
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: course_id
-                  type: int
+                  type: uuid
               - column:
                   name: student_id
-                  type: int
+                  type: uuid
         - addForeignKeyConstraint:
             baseColumnNames: course_id
             baseTableName: Student_Course
@@ -64,14 +61,6 @@ databaseChangeLog:
             onUpdate: RESTRICT
             referencedColumnNames: id
             referencedTableName: Student
-  - changeSet:
-      id: 4
-      author: Melle
-      changes:
-        - createSequence:
-            incrementBy: 2
-            sequenceName: HIBERNATE_SEQUENCE
-            startValue: 2000
   - changeSet:
       id: 5
       author: Melle

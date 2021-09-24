@@ -1,33 +1,26 @@
 package test.jpa.demo;
 
-import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+
 @Entity
-public class Student {
+public class Student extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	@OneToMany(mappedBy = "student", cascade = { CascadeType.PERSIST, CascadeType.MERGE,
+			CascadeType.REMOVE }, orphanRemoval = true)
+	private final Set<StudentCourse> studentCourse = new HashSet<>();
 
-    @OneToMany(mappedBy = "student", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REMOVE}, orphanRemoval = true)
-    private Set<StudentCourse> studentCourse = new HashSet<>();
+	public Set<StudentCourse> getStudentCourse() {
+		return studentCourse;
+	}
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Set<StudentCourse> getStudentCourse() {
-        return studentCourse;
-    }
-
-    public void setStudentCourse(Set<StudentCourse> studentCourse) {
-        this.studentCourse.clear();
-        this.studentCourse.addAll(studentCourse);
-    }
+	public void setStudentCourse(Set<StudentCourse> studentCourse) {
+		this.studentCourse.clear();
+		this.studentCourse.addAll(studentCourse);
+		this.studentCourse.forEach(sCourse -> sCourse.setStudent(this));
+	}
 }

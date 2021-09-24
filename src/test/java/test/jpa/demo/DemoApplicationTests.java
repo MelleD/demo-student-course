@@ -1,48 +1,54 @@
 package test.jpa.demo;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Set;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-
 @SpringBootTest
 class DemoApplicationTests {
 
-    @Autowired
-    private CourseRepository courseRepository;
+	@Autowired
+	private CourseRepository courseRepository;
 
-    @Autowired
-    private StudentRepository studentRepository;
+	@Autowired
+	private StudentRepository studentRepository;
 
-    @Autowired
-    private StudentService studentService;
+	@Autowired
+	private StudentService studentService;
 
-    @Autowired
-    private StudentCourseRepository studentCourseRepository;
+	@Autowired
+	private StudentCourseRepository studentCourseRepository;
 
+	@Test
+	void testMerge() {
 
-    @Test
-    void testMerge() {
+		final Student student = new Student();
+		final Course course = new Course();
+		final Course course2 = new Course();
+		final Course course3 = new Course();
 
-        Student student = new Student();
-        Course course = new Course();
-        Course course2 = new Course();
-        Course course3 = new Course();
+		final Course savedCourse1 = courseRepository.save(course);
+		final Course savedCourse2 = courseRepository.save(course2);
+		final Course savedCourse3 = courseRepository.save(course3);
+		courseRepository.save(course2);
 
-        Course savedCourse1 = courseRepository.save(course);
-        Course savedCourse2 = courseRepository.save(course2);
-        Course savedCourse3 = courseRepository.save(course3);
-        courseRepository.save(course2);
-        student.setStudentCourse(Set.of(new StudentCourse().setCourse(savedCourse1).setStudent(student), new StudentCourse().setCourse(savedCourse3).setStudent(student)));
-        Student savedStudent = studentRepository.save(student);
+		final Set<StudentCourse> coursesStudentCourses = new HashSet<>();
+		coursesStudentCourses.add(new StudentCourse().setCourse(savedCourse1).setStudent(student));
+		coursesStudentCourses.add(new StudentCourse().setCourse(savedCourse2).setStudent(student));
+//		coursesStudentCourses.add(new StudentCourse().setCourse(savedCourse3).setStudent(student));
 
-        studentService.mergeStudent(savedStudent.getId(), Set.of(savedCourse1.getId(), savedCourse2.getId()));
+		student.setStudentCourse(coursesStudentCourses);
 
-        assertThat(studentCourseRepository.findAll()).hasSize(2);
-    }
+		final Student savedStudent = studentRepository.save(student);
+
+		studentService.mergeStudent(savedStudent.getId(), Set.of(savedCourse1.getId(), savedCourse2.getId()));
+
+		assertThat(studentCourseRepository.findAll()).hasSize(2);
+	}
 
 }

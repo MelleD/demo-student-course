@@ -1,47 +1,37 @@
 package test.jpa.demo;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table
-public class StudentCourse {
+public class StudentCourse extends AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+	@ManyToOne
+	@JoinColumn(name = "student_id")
+	private Student student;
 
-    @ManyToOne
-    @JoinColumn(name = "student_id")
-    private Student student;
+	@ManyToOne
+	@JoinColumn(name = "course_id")
+	private Course course;
 
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+	public Student getStudent() {
+		return student;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public StudentCourse setStudent(Student student) {
+		this.student = student;
+		return this;
+	}
 
-    public StudentCourse setId(Long id) {
-        this.id = id;
-        return this;
-    }
+	public Course getCourse() {
+		return course;
+	}
 
-    public Student getStudent() {
-        return student;
-    }
-
-    public StudentCourse setStudent(Student student) {
-        this.student = student;
-        return this;
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public StudentCourse setCourse(Course course) {
-        this.course = course;
-        return this;
-    }
+	public StudentCourse setCourse(Course course) {
+		this.course = course;
+		return this;
+	}
 }
